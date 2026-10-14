@@ -1,4 +1,4 @@
-import { File } from "lucide-react";
+import { FileText } from "lucide-react";
 import { Button } from "../ui/button";
 import NavLink from "./nav-link";
 
@@ -10,7 +10,7 @@ export default function Navbar() {
             {/* Left */}
             <div className="flex lg:flex-1 items-center">
                 <NavLink href="/" className="flex items-center gap-1 lg:gap-2 shrink-0">
-                    <File className="w-5 h-5 lg:w-8 lg:h-8 text-gray-900 hover:rotate-12 transform transition duration-200 ease-in-out" />
+                    <FileText className="w-5 h-5 lg:w-8 lg:h-8 text-gray-900 hover:rotate-12 transform transition duration-200 ease-in-out" />
                     <span className="font-extrabold lg:text-xl text-gray-900">
                         Summarizer
                     </span>
