@@ -4,6 +4,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/common/navbar";
 import Footer from "@/components/common/footer";
+import { ClerkProvider } from "@clerk/nextjs";
+import { Suspense } from "react";
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -19,11 +21,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={cn("h-full", "antialiased", "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <ClerkProvider>
+          <Suspense fallback={<>Loading...</>}>
+            <Navbar />
+          </Suspense>
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </ClerkProvider>
       </body>
     </html>
   );
