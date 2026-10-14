@@ -6,8 +6,10 @@ import Navbar from "@/components/common/navbar";
 import Footer from "@/components/common/footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Suspense } from "react";
+import { ThemeProvider } from "@/components/common/theme-provider";
+import { Schibsted_Grotesk } from "next/font/google";
 
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
+const font = Schibsted_Grotesk({ subsets: ["latin"], variable: "--font-schibsted" });
 
 export const metadata: Metadata = {
   title: "pdf-summarizer",
@@ -18,18 +20,26 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={cn("h-full", "antialiased", "font-sans", geist.variable)}
+      className={cn("h-full", "antialiased", "font-sans", font.variable)}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
-        <ClerkProvider>
-          <Suspense fallback={<>Loading...</>}>
-            <Navbar />
-          </Suspense>
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-        </ClerkProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ClerkProvider>
+            <Suspense fallback={<>Loading...</>}>
+              <Navbar />
+            </Suspense>
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </ClerkProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,11 +1,19 @@
+import SampleCard from "@/components/upload/sample.card";
+import UploadForm from "@/components/upload/upload-form";
 
 export default function Upload() {
     return (
-        <section className="min-h-screen bg-stone-50 text-stone-900">
-            <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 pt-16 pb-25  md:grid-cols-[1.05fr_.95fr] md:gap-16">
-                <div>LEFT</div>
-                <div>RIGHT</div>
-            </div>
-        </section>
+        <div className="mx-auto max-w-5xl px-6 pt-14 pb-24">
+            <h1 className="max-w-2xl text-balance leading-[1.02] tracking-tight">
+                Turn any PDF into a
+                <span className="whitespace-nowrap"> one-page </span>
+                summary
+            </h1>
+            <p className="mt-6 max-w-xl text-lg text-muted-foreground">
+                Reports, papers, contracts, meeting packs. Upload the file and read thekey points in under a minute.
+            </p>
+            <UploadForm />
+            <SampleCard />
+        </div>
     )
 }

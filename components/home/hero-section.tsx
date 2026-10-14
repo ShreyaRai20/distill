@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function HeroSection() {
     return (
-        <section className="bg-stone-50">
+        <section className="min-h-screen bg-background text-foreground">
             {/* mx-auto center the div from left and right, provides equal margin  from left and*/}
             {/* max-w-4xl - Never wider than 56rem (896px), so text doesn’t stretch across a huge monitor*/}
             {/* spacing is 1 = 4px, px-1 = 4px, 6*4 -> 24px,  pt-20 = 80px, pb-24 = 96px*/}
