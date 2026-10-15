@@ -15,7 +15,7 @@ export const instant = false;
 export default async function Upload() {
     await auth.protect();
     return (
-        <div className="mx-auto max-w-5xl px-6 pt-14 pb-24">
+        <div className="mx-auto max-w-7xl px-8 pt-14 pb-24">
             <Suspense fallback={<UploadSkeleton />}>
                 <UploadContent />
             </Suspense>

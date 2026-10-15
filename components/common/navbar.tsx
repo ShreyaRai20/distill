@@ -8,7 +8,7 @@ import Image from "next/image";
 export default function Navbar() {
     return (
         <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
-            <nav className="mx-auto max-w-6xl flex items-center justify-between px-6 py-3 lg:py-4">
+            <nav className="mx-auto max-w-7xl flex items-center justify-between px-6 py-3 lg:py-4">
                 {/* Left */}
                 <div className="flex items-center lg:flex-1">
                     <NavLink href="/" className="flex items-center gap-1 lg:gap-2 shrink-0">

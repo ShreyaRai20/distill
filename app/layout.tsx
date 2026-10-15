@@ -7,10 +7,11 @@ import Footer from "@/components/common/footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Suspense } from "react";
 import { ThemeProvider } from "@/components/common/theme-provider";
-import { Schibsted_Grotesk } from "next/font/google";
 import { Toaster } from "@/components/ui/toast";
+import { Inter } from "next/font/google";
 
-const font = Schibsted_Grotesk({ subsets: ["latin"], variable: "--font-schibsted" });
+const font = Inter({ subsets: ["latin"], variable: "--font-app" });
+
 
 export const metadata: Metadata = {
   title: "distill",
