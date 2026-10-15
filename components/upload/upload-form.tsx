@@ -12,7 +12,6 @@ import { useUploadThing } from "@/utils/uploadthing";
 import { cn } from "@/lib/utils";
 import { toast } from "../ui/toast";
 import { generatePdfSummary } from "@/app/actions/upload-thing-actions";
-import SummaryCard from "./summary-card";
 import SummarySkeleton from "./summary-skeleton";
 import { useRouter } from "next/navigation";
 
@@ -25,7 +24,6 @@ function formatSize(bytes: number) {
 export default function UploadForm() {
     const router = useRouter()
     const [dragging, setDragging] = useState(false)
-    const [summary, setSummary] = useState<{ fileName: string; summary: string } | null>(null)
     const [isSummarizing, setIsSummarizing] = useState(false)
     const form = useForm<z.infer<typeof uploadSchema>>({
         resolver: zodResolver(uploadSchema),
@@ -45,12 +43,6 @@ export default function UploadForm() {
     });
 
     const handleSubmit = async (data: z.infer<typeof uploadSchema>) => {
-        // const parsedData = uploadSchema.safeParse(data)
-        // if (!parsedData) throw new Error("Invalid data")
-
-        // console.log("parsedData: ", parsedData)
-        setSummary(null)
-
         const res = await startUpload([data?.file])
 
         if (!res) {
@@ -64,22 +56,23 @@ export default function UploadForm() {
         })
 
         setIsSummarizing(true)
-        // todo- redirect to summary id page
         try {
             const result = await generatePdfSummary(res)
 
             if (!result.success || !result.data) {
                 form.setError("file", { message: result.message })
+                setIsSummarizing(false)
                 return
             }
 
-            router.push(`/summaries/${result}`)
-
-            setSummary(result.data)
-        } finally {
+            router.push(`/summaries/${result.data.savedSummaryId}`)
+            // no setIsSummarizing(false) on success: keep the skeleton and button
+            // in the loading state until the new page replaces this one
+        } catch (error) {
+            console.error(error)
+            form.setError("file", { message: "Something went wrong. Please try again." })
             setIsSummarizing(false)
         }
-
     }
 
     return (
@@ -198,7 +191,6 @@ export default function UploadForm() {
                 </div>
             </form>
             {isSummarizing && <SummarySkeleton />}
-            {summary && <SummaryCard fileName={summary.fileName} summary={summary.summary} />}
             {/* <div className="mt-12 flex gap-6 items-center border-2 border-dashed border-primary rounded-sm p-8">
                 <div className="flex size-20 items-center justify-center rounded-[28px] border bg-card">
                     <FileUp className="size-8 text-primary" />

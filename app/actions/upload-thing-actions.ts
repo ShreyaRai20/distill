@@ -53,28 +53,28 @@ export async function generatePdfSummary(uploadResponse: UploadResponse) {
 
     const { userId } = await auth();
 
-    if (userId) {
-      try {
-        const savedSummary = await savePdfSummary({
-          userId,
-          fileUrl: pdfUrl,
-          fileName: pdfName,
-          summary,
-        });
-        console.log(savedSummary)
-        //  revalidate
-        revalidatePath(`/summaries/${savedSummary}`)
-        
-      } catch (error) {
-        // the summary is still returned; the failure is already logged in savePdfSummary
-        console.error("Failed to persist summary:", error);
-      }
+    if(!userId) {
+      return {
+        success: false,
+        message: "user not found",
+      };
     }
+    
+    const savedSummaryId = await savePdfSummary({
+      userId,
+      fileUrl: pdfUrl,
+      fileName: pdfName,
+      summary,
+    });
+
+    //  revalidate
+    revalidatePath(`/summaries`)
+    revalidatePath(`/summaries/${savedSummaryId.id}`)
 
     return {
       success: true,
       message: "Summary generated successfully",
-      data: { fileName: pdfName, summary },
+      data: { fileName: pdfName, savedSummaryId:savedSummaryId.id},
     };
   } catch (error) {
     console.error("generatePdfSummary error:", error);

@@ -1,9 +1,8 @@
 import SampleCard from "@/components/upload/sample.card";
 import UploadForm from "@/components/upload/upload-form";
 import { UploadSkeleton } from "@/components/upload/upload-skeleton";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
@@ -11,7 +10,10 @@ export const metadata: Metadata = {
     description: "upload your pdf here and summarize it in key points",
 };
 
-export default function Upload() {
+export const instant = false;
+
+export default async function Upload() {
+    await auth.protect();
     return (
         <div className="mx-auto max-w-5xl px-6 pt-14 pb-24">
             <Suspense fallback={<UploadSkeleton />}>
@@ -22,9 +24,6 @@ export default function Upload() {
 }
 
 async function UploadContent() {
-    const user = await currentUser();
-    if (!user) return redirect("/sign-in");
-
     return (
         <>
             <h1 className="max-w-2xl text-balance leading-[1.02] tracking-tight">
