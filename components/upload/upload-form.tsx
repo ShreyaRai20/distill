@@ -10,6 +10,8 @@ import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { useUploadThing } from "@/utils/uploadthing";
 import { cn } from "@/lib/utils";
+import { toast } from "../ui/toast";
+import { generatePdfSummary } from "@/app/actions";
 
 function formatSize(bytes: number) {
     return bytes < 1024 * 1024
@@ -49,7 +51,13 @@ export default function UploadForm() {
             return
         }
 
-        console.log("Uploaded:", res[0])
+        toast.add({
+            type: "success",
+            description: "file uploaded successfully"
+        })
+
+        const summary = await generatePdfSummary(res)
+
     }
 
     return (

@@ -8,6 +8,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Suspense } from "react";
 import { ThemeProvider } from "@/components/common/theme-provider";
 import { Schibsted_Grotesk } from "next/font/google";
+import { Toaster } from "@/components/ui/toast";
 
 const font = Schibsted_Grotesk({ subsets: ["latin"], variable: "--font-schibsted" });
 
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               {children}
             </main>
             <Footer />
+            <Toaster />
           </ClerkProvider>
         </ThemeProvider>
       </body>
