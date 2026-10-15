@@ -11,9 +11,10 @@ import { Input } from "../ui/input";
 import { useUploadThing } from "@/utils/uploadthing";
 import { cn } from "@/lib/utils";
 import { toast } from "../ui/toast";
-import { generatePdfSummary } from "@/app/actions";
+import { generatePdfSummary } from "@/app/actions/upload-thing-actions";
 import SummaryCard from "./summary-card";
 import SummarySkeleton from "./summary-skeleton";
+import { useRouter } from "next/navigation";
 
 function formatSize(bytes: number) {
     return bytes < 1024 * 1024
@@ -22,6 +23,7 @@ function formatSize(bytes: number) {
 }
 
 export default function UploadForm() {
+    const router = useRouter()
     const [dragging, setDragging] = useState(false)
     const [summary, setSummary] = useState<{ fileName: string; summary: string } | null>(null)
     const [isSummarizing, setIsSummarizing] = useState(false)
@@ -62,6 +64,7 @@ export default function UploadForm() {
         })
 
         setIsSummarizing(true)
+        // todo- redirect to summary id page
         try {
             const result = await generatePdfSummary(res)
 
@@ -69,6 +72,8 @@ export default function UploadForm() {
                 form.setError("file", { message: result.message })
                 return
             }
+
+            router.push(`/summaries/${result}`)
 
             setSummary(result.data)
         } finally {

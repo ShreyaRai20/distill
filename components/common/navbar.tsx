@@ -30,7 +30,7 @@ export default function Navbar() {
                 <div className="flex items-center gap-4 lg:gap-12 lg:justify-center">
                     <NavLink href="/pricing">Pricing</NavLink>
                     <Show when="signed-in">
-                        <NavLink href="/dashboard">Your Summaries</NavLink>
+                        <NavLink href="/summaries">Your Summaries</NavLink>
                     </Show>
                 </div>
 

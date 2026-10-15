@@ -1,6 +1,10 @@
 import SampleCard from "@/components/upload/sample.card";
 import UploadForm from "@/components/upload/upload-form";
+import { UploadSkeleton } from "@/components/upload/upload-skeleton";
+import { currentUser } from "@clerk/nextjs/server";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
     title: "distill | upload pdf",
@@ -10,6 +14,19 @@ export const metadata: Metadata = {
 export default function Upload() {
     return (
         <div className="mx-auto max-w-5xl px-6 pt-14 pb-24">
+            <Suspense fallback={<UploadSkeleton />}>
+                <UploadContent />
+            </Suspense>
+        </div>
+    )
+}
+
+async function UploadContent() {
+    const user = await currentUser();
+    if (!user) return redirect("/sign-in");
+
+    return (
+        <>
             <h1 className="max-w-2xl text-balance leading-[1.02] tracking-tight">
                 Turn any PDF into a
                 <span className="whitespace-nowrap"> one-page </span>
@@ -20,6 +37,6 @@ export default function Upload() {
             </p>
             <UploadForm />
             <SampleCard />
-        </div>
-    )
+        </>
+    );
 }
