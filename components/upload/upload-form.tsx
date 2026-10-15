@@ -1,57 +1,135 @@
 "use client"
-import { FileUp, Loader2 } from "lucide-react";
+import { FileText, FileUp, Loader2, X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { uploadSchema } from "@/lib/schema";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import z from "zod";
-import { Field, FieldGroup, FieldLabel } from "../ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
+import { useUploadThing } from "@/utils/uploadthing";
+import { cn } from "@/lib/utils";
+
+function formatSize(bytes: number) {
+    return bytes < 1024 * 1024
+        ? `${Math.max(1, Math.round(bytes / 1024))} KB`
+        : `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
 
 export default function UploadForm() {
-    const [isPending, startTransition] = useTransition()
+    const [dragging, setDragging] = useState(false)
     const form = useForm<z.infer<typeof uploadSchema>>({
         resolver: zodResolver(uploadSchema),
+        mode: "onChange",
         defaultValues: {
             file: undefined
         }
     })
 
-    const handleSubmit = (data: z.infer<typeof uploadSchema>) => {
-        startTransition(async () => {
-            console.log(data.file)
-        })
+    const { startUpload, isUploading } = useUploadThing("pdfUploader", {
+        onClientUploadComplete: (res) => {
+            console.log("Done:", res);
+        },
+        onUploadError: (err) => {
+            form.setError("file", { message: err.message });
+        },
+    });
+
+    const handleSubmit = async (data: z.infer<typeof uploadSchema>) => {
+        // const parsedData = uploadSchema.safeParse(data)
+        // if (!parsedData) throw new Error("Invalid data")
+
+        // console.log("parsedData: ", parsedData)
+
+        const res = await startUpload([data?.file])
+
+        if (!res) {
+            form.setError("file", { message: "Upload failed. Please try again." })
+            return
+        }
+
+        console.log("Uploaded:", res[0])
     }
 
     return (
         <>
-            <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                className="mt-12"
+            >
                 <FieldGroup>
                     <Controller
                         name="file"
                         control={form.control}
-                        render={({ field, fieldState }) => (
-                            <Field>
-                                <label
-                                    htmlFor="pdf-upload"
-                                    className="mt-4 flex cursor-pointer items-center gap-6 rounded-xl border-2 border-dashed border-primary p-8 transition-colors hover:bg-primary/5"
-                                >
-                                    <div className="flex size-16 shrink-0 items-center justify-center rounded-[20px] border bg-card">
-                                        <FileUp className="size-7 text-primary" />
-                                    </div>
+                        render={({ field, fieldState }) => {
+                            const file = field.value as File | undefined
+                            return (
+                                <Field data-invalid={fieldState.invalid}>
+                                    <FieldLabel htmlFor="pdf-upload" className="sr-only">
+                                        PDF file
+                                    </FieldLabel>
 
-                                    <div className="flex-1">
-                                        <p className="text-base font-semibold">
-                                            Drop your PDF here, or{" "}
-                                            <span className="text-primary underline">
-                                                browse files
-                                            </span>
-                                        </p>
+                                    <div
+                                        onDragOver={(e) => {
+                                            e.preventDefault()
+                                            setDragging(true)
+                                        }}
+                                        onDragLeave={() => setDragging(false)}
+                                        onDrop={(e) => {
+                                            e.preventDefault()
+                                            setDragging(false)
+                                            field.onChange(e.dataTransfer.files[0])
+                                        }}
+                                        className={cn(
+                                            "mt-4 flex items-center gap-6 rounded-[28px] border-2 border-dashed border-primary p-8 transition-colors",
+                                            file && "bg-primary/5",
+                                            dragging && "bg-primary/10",
+                                            fieldState.invalid && "border-destructive"
+                                        )}
+                                    >
+                                        <div className="flex size-20 shrink-0 items-center justify-center rounded-[22px] border bg-card">
+                                            {file ? (
+                                                <FileText className="size-8 text-primary" />
+                                            ) : (
+                                                <FileUp className="size-8 text-primary" />
+                                            )}
+                                        </div>
 
-                                        <p className="mt-1 text-xs text-muted-foreground">
-                                            PDF only, up to 32 MB
-                                        </p>
+                                        {file ? (
+                                            <div className="flex min-w-0 flex-1 items-center gap-4">
+                                                <div className="min-w-0">
+                                                    <p className="truncate text-xl font-semibold">{file.name}</p>
+                                                    <p className="text-muted-foreground">
+                                                        {formatSize(file.size)} · {isUploading ? "Uploading..." : "Ready to summarize"}
+                                                    </p>
+                                                </div>
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="ml-auto shrink-0 rounded-full"
+                                                    disabled={isUploading}
+                                                    onClick={() => form.resetField("file")}
+                                                >
+                                                    <X className="size-5" />
+                                                    <span className="sr-only">Remove file</span>
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <p className="text-xl font-semibold">
+                                                    Drop your PDF here, or{" "}
+                                                    <label
+                                                        htmlFor="pdf-upload"
+                                                        className="cursor-pointer text-primary underline underline-offset-4"
+                                                    >
+                                                        browse files
+                                                    </label>
+                                                </p>
+                                                <p className="mt-1 text-muted-foreground">PDF only, up to 32 MB</p>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <Input
@@ -59,30 +137,30 @@ export default function UploadForm() {
                                         type="file"
                                         accept="application/pdf,.pdf"
                                         className="sr-only"
+                                        aria-invalid={fieldState.invalid}
+                                        onBlur={field.onBlur}
                                         onChange={(e) => {
-                                            field.onChange(e.target.files?.[0]);
-                                            e.target.value = "";
+                                            field.onChange(e.target.files?.[0])
+                                            e.target.value = ""
                                         }}
                                     />
-                                </label>
 
-                                {fieldState.error && (
-                                    <p className="mt-2 text-sm text-destructive">
-                                        {fieldState.error.message}
-                                    </p>
-                                )}
-                            </Field>
-                        )}
+                                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                                </Field>
+                            )
+                        }
+                        }
                     />
                 </FieldGroup>
                 <div className="mt-8 flex flex-wrap items-center gap-5">
                     <Button
                         type="submit"
                         size="lg"
-                        disabled={isPending}
+                        disabled={isUploading}
                         className="h-14 px-8 rounded-full text-lg font-semibold"
                     >
-                        {isPending ? <><Loader2 /> uploading...</> : "Summarize PDF"}
+                        {isUploading && <Loader2 className="size-5 animate-spin" />}
+                        {isUploading ? "Uploading..." : "Summarize PDF"}
                     </Button>
                     <p className="text-muted-foreground">
                         Your file stays private to your account.
