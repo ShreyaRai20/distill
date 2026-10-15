@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { uploadSchema } from "@/lib/schema";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import z from "zod";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
@@ -12,6 +12,8 @@ import { useUploadThing } from "@/utils/uploadthing";
 import { cn } from "@/lib/utils";
 import { toast } from "../ui/toast";
 import { generatePdfSummary } from "@/app/actions";
+import SummaryCard from "./summary-card";
+import SummarySkeleton from "./summary-skeleton";
 
 function formatSize(bytes: number) {
     return bytes < 1024 * 1024
@@ -21,6 +23,8 @@ function formatSize(bytes: number) {
 
 export default function UploadForm() {
     const [dragging, setDragging] = useState(false)
+    const [summary, setSummary] = useState<{ fileName: string; summary: string } | null>(null)
+    const [isSummarizing, setIsSummarizing] = useState(false)
     const form = useForm<z.infer<typeof uploadSchema>>({
         resolver: zodResolver(uploadSchema),
         mode: "onChange",
@@ -43,6 +47,7 @@ export default function UploadForm() {
         // if (!parsedData) throw new Error("Invalid data")
 
         // console.log("parsedData: ", parsedData)
+        setSummary(null)
 
         const res = await startUpload([data?.file])
 
@@ -56,7 +61,19 @@ export default function UploadForm() {
             description: "file uploaded successfully"
         })
 
-        const summary = await generatePdfSummary(res)
+        setIsSummarizing(true)
+        try {
+            const result = await generatePdfSummary(res)
+
+            if (!result.success || !result.data) {
+                form.setError("file", { message: result.message })
+                return
+            }
+
+            setSummary(result.data)
+        } finally {
+            setIsSummarizing(false)
+        }
 
     }
 
@@ -164,17 +181,19 @@ export default function UploadForm() {
                     <Button
                         type="submit"
                         size="lg"
-                        disabled={isUploading}
+                        disabled={isUploading || isSummarizing}
                         className="h-14 px-8 rounded-full text-lg font-semibold"
                     >
-                        {isUploading && <Loader2 className="size-5 animate-spin" />}
-                        {isUploading ? "Uploading..." : "Summarize PDF"}
+                        {(isUploading || isSummarizing) && <Loader2 className="size-5 animate-spin" />}
+                        {isUploading ? "Uploading..." : isSummarizing ? "Summarizing..." : "Summarize PDF"}
                     </Button>
                     <p className="text-muted-foreground">
                         Your file stays private to your account.
                     </p>
                 </div>
             </form>
+            {isSummarizing && <SummarySkeleton />}
+            {summary && <SummaryCard fileName={summary.fileName} summary={summary.summary} />}
             {/* <div className="mt-12 flex gap-6 items-center border-2 border-dashed border-primary rounded-sm p-8">
                 <div className="flex size-20 items-center justify-center rounded-[28px] border bg-card">
                     <FileUp className="size-8 text-primary" />

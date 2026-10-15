@@ -13,7 +13,7 @@ import { Toaster } from "@/components/ui/toast";
 const font = Schibsted_Grotesk({ subsets: ["latin"], variable: "--font-schibsted" });
 
 export const metadata: Metadata = {
-  title: "pdf-summarizer",
+  title: "distill",
   description: "this applicatiom is to summarize the pdf",
 };
 

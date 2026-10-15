@@ -1,16 +1,18 @@
 "use server"
 
-import { fetchAndExtractPdfText } from "@/lib/langchain";
+import { fetchAndExtractPdfText, summarizePdfText } from "@/lib/generate-summary";
 
-export async function generatePdfSummary(uploadResponse: [{
-    serverData: {
-        userId: String;
-        file: {
-            url: string,
-            name: string
-        }
-    }
-}]) {
+type UploadResponse = {
+  serverData: {
+    userId: string;
+    file: {
+      url: string;
+      name: string;
+    };
+  };
+}[];
+
+export async function generatePdfSummary(uploadResponse: UploadResponse) {
     if (!uploadResponse) {
         return {
             success: false,
@@ -36,10 +38,25 @@ export async function generatePdfSummary(uploadResponse: [{
 
     try {
         const pdfText = await fetchAndExtractPdfText(pdfUrl)
+        if (!pdfText.trim()) {
+            return {
+                success: false,
+                message: "Couldn't read any text from this PDF (it may be scanned).",
+                data: null,
+            };
+        }
+
+        const summary = await summarizePdfText(pdfText, pdfName)
+        return {
+                success: true,
+                message: "Summary generated successfully",
+                data: { fileName: pdfName, summary },
+            };
     } catch (error) {
+        console.error("generatePdfSummary error:", error)
         return {
             success: false,
-            message: "file upload failed",
+            message: "Failed to generate summary. Please try again.",
             data: null
         }
     }

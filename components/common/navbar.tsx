@@ -3,6 +3,7 @@ import { FileText } from "lucide-react";
 import NavLink from "./nav-link";
 import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { ThemeToggle } from "./theme-toggle";
+import Image from "next/image";
 
 export default function Navbar() {
     return (
@@ -11,9 +12,16 @@ export default function Navbar() {
                 {/* Left */}
                 <div className="flex items-center lg:flex-1">
                     <NavLink href="/" className="flex items-center gap-1 lg:gap-2 shrink-0">
-                        <FileText className="w-5 h-5 lg:w-8 lg:h-8 text-foreground hover:rotate-12 transform transition duration-200 ease-in-out" />
+                        <Image
+                            src="/logo.svg"
+                            alt="Distill logo"
+                            width={32}
+                            height={32}
+                            priority
+                            className="w-6 h-6 lg:w-8 lg:h-8 hover:rotate-12 transform transition duration-200 ease-in-out"
+                        />
                         <span className="font-extrabold lg:text-xl text-foreground">
-                            Summarizer
+                            Distill
                         </span>
                     </NavLink>
                 </div>

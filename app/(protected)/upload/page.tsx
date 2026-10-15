@@ -1,5 +1,11 @@
 import SampleCard from "@/components/upload/sample.card";
 import UploadForm from "@/components/upload/upload-form";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "distill | upload pdf",
+    description: "upload your pdf here and summarize it in key points",
+};
 
 export default function Upload() {
     return (
