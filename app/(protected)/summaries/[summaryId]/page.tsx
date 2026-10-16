@@ -28,9 +28,6 @@ export default async function SummaryId({ params, searchParams }: Props) {
                 <SummaryHeader summary={summary[0]} isNew={justCreated === "1"} />
                 <div className="mt-12 grid gap-18 lg:grid-cols-[minmax(0,1fr)_320px]">
                     <main className="rounded-[28px] border border-primary bg-primary/5 p-6 md:p-">
-                        <main className="rounded-[28px] border border-primary bg-primary/5 p-6 md:p-10">
-                            <pre className="whitespace-pre-wrap">{summary[0].excerpt}</pre>
-                        </main>
                         <SummaryMarkdown text={JSON.stringify(summary[0].excerpt)} />
                     </main>
                     <aside>{/* sidebar in step 4 */}</aside>
