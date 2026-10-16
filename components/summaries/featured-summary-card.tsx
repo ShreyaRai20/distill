@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowRight, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
+import DeleteButton from "./delere-button";
 
 export default function FeaturedSummaryCard({ summary }: { summary: Summary }) {
     return (
@@ -23,6 +24,9 @@ export default function FeaturedSummaryCard({ summary }: { summary: Summary }) {
                         <CardDescription>{formatDistanceToNow(summary.createdAt, { addSuffix: true })}</CardDescription>
                     </div>
                     {/* delete button goes here in a later step */}
+                    <div className="ml-auto shrink-0">
+                        <DeleteButton summaryId={summary.id} />
+                    </div>
                 </div>
             </CardHeader>
             <CardContent>

@@ -1,7 +1,7 @@
 import FeaturedSummaryCard from "@/components/summaries/featured-summary-card";
 import SummaryCard from "@/components/summaries/summary-card";
 import UsageMeter from "@/components/summaries/usage-meter";
-import { getSummaries } from "@/lib/summaries";
+import { getSummaries } from "@/lib/queries/summaries";
 import { auth } from "@clerk/nextjs/server"
 import { connection } from "next/server";
 import { Suspense } from "react";

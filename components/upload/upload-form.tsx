@@ -65,7 +65,7 @@ export default function UploadForm() {
                 return
             }
 
-            router.push(`/summaries/${result.data.savedSummaryId}`)
+            router.push(`/summaries/${result.data.savedSummaryId}?new=1`)
             // no setIsSummarizing(false) on success: keep the skeleton and button
             // in the loading state until the new page replaces this one
         } catch (error) {

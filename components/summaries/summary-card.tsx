@@ -3,7 +3,8 @@ import { formatDistanceToNow } from "date-fns";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
-import { ArrowRight, FileText } from "lucide-react";
+import { ArrowRight, FileText, X } from "lucide-react";
+import DeleteButton from "./delere-button";
 
 export default function SummaryCard({ summary }: { summary: Summary }) {
     return (
@@ -18,6 +19,9 @@ export default function SummaryCard({ summary }: { summary: Summary }) {
                         <CardDescription>{formatDistanceToNow(summary.createdAt, { addSuffix: true })}</CardDescription>
                     </div>
                     {/* delete button goes here in a later step */}
+                    <div className="ml-auto shrink-0">
+                        <DeleteButton summaryId={summary.id} />
+                    </div>
                 </div>
             </CardHeader>
             <CardContent>
