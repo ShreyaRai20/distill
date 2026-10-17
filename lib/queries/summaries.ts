@@ -3,7 +3,7 @@ import { dbConnect } from "../db";
 import { Summary } from "../summaries";
 import { parseSummary } from "../parse-summary";
 
-export async function getSummaries(): Promise<Summary[]> {
+export async function getSummaries(): Promise<(Summary & {tldr: string | null})[] > {
   const user = await currentUser()
 
   if (!user) throw new Error("Not authorized")

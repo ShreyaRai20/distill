@@ -1,17 +1,18 @@
 "use client"
-import { FileText } from "lucide-react";
 import NavLink from "./nav-link";
-import { Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { Show, UserButton } from "@clerk/nextjs";
 import { ThemeToggle } from "./theme-toggle";
 import Image from "next/image";
+import Link from "next/link";
+import { Badge } from "../ui/badge";
 
 export default function Navbar() {
     return (
-        <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur border-transparent">
+        <header className="sticky top-0 z-50 border-b bg-background/80 backdrop-blur border-transparent">
             <nav className="mx-auto max-w-7xl flex items-center justify-between px-6 py-3 lg:py-4">
                 {/* Left */}
                 <div className="flex items-center lg:flex-1">
-                    <NavLink href="/" className="flex items-center gap-1 lg:gap-2 shrink-0">
+                    <Link href="/" className="flex items-center gap-1 lg:gap-2 shrink-0">
                         <Image
                             src="/logo.svg"
                             alt="Distill logo"
@@ -23,7 +24,7 @@ export default function Navbar() {
                         <span className="font-extrabold lg:text-xl text-foreground">
                             Distill
                         </span>
-                    </NavLink>
+                    </Link>
                 </div>
 
                 {/* Center */}
@@ -40,7 +41,12 @@ export default function Navbar() {
                     <ThemeToggle />
                     <Show when="signed-in">
                         <NavLink href="/upload">Upload a PDF</NavLink>
-                        <span className="text-sm font-medium text-primary">Pro</span>
+                        <Badge
+                            variant="ghost"
+                            className="gap-1.5 rounded-full px-3 py-1 text-primary hover:text-primary"
+                        >
+                            Pro
+                        </Badge>
                         <UserButton />
                     </Show>
                     <Show when="signed-out">

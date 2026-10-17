@@ -12,7 +12,7 @@ export default function HeroSection() {
             <div className="mx-auto max-w-4xl px-6 pt-20 pb-24 text-center">
                 <Badge
                     variant="outline"
-                    className="gap-1.5 rounded-full border-emerald-200 bg-white/70 px-3 py-1 text-emerald-700"
+                    className="gap-1.5 rounded-full border-primary bg-secondary px-3 py-1 text-primary"
                 >
                     {/* size-3.5 -> 14px */}
                     <Sparkles className="size-3.5" />
@@ -27,7 +27,7 @@ export default function HeroSection() {
                 <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
                     <Button
                         size="lg"
-                        className="group h-12 rounded-full bg-stone-900 px-7 text-base hover:bg-stone-800"
+                        className="group h-12 rounded-full bg-secondary px-7 text-primary hover:bg-stone-800"
                         nativeButton={false}
                         render={<Link href="/dashboard" />}
                     >
