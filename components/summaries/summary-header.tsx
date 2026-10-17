@@ -37,12 +37,12 @@ export default function SummaryHeader({
                     </Badge>
                 }
                 <span className="text-muted-foreground text-sm">
-                    Generated {formatDistanceToNow(summary.createdAt)}
+                    Generated {formatDistanceToNow(summary.createdAt, { addSuffix: true })}
                 </span>
             </div>
 
-            <h1 className="mt-5 max-3xl leading-[1.04] tracking-tight">
-                {summary.title}
+            <h1 className="mt-5 max-w-3xl leading-[1.04] tracking-tight">
+                {summary.title.replace(/\.pdf$/i, "")}
             </h1>
         </header>
     )

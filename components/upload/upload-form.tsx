@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { uploadSchema } from "@/lib/schema";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import z from "zod";
 import { Field, FieldError, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
@@ -32,6 +32,14 @@ export default function UploadForm() {
             file: undefined
         }
     })
+
+    useEffect(() => {
+        // Runs when the page is hidden (navigating away) or unmounted
+        return () => {
+            form.reset()
+            setIsSummarizing(false)
+        }
+    }, [form])
 
     const { startUpload, isUploading } = useUploadThing("pdfUploader", {
         onClientUploadComplete: (res) => {
@@ -190,31 +198,6 @@ export default function UploadForm() {
                     </p>
                 </div>
             </form>
-            {isSummarizing && <SummarySkeleton />}
-            {/* <div className="mt-12 flex gap-6 items-center border-2 border-dashed border-primary rounded-sm p-8">
-                <div className="flex size-20 items-center justify-center rounded-[28px] border bg-card">
-                    <FileUp className="size-8 text-primary" />
-                </div>
-                <div>
-                    <p className="text-xl font-semibold">
-                        Drop your PDF here, or browse files
-                    </p>
-                    <p className=" mt-1 text-muted-foreground">
-                        PDF only, up to 32 MB
-                    </p>
-                </div>
-            </div>
-            <div className="mt-8 flex flex-wrap items-center gap-5">
-                <Button
-                    size="lg"
-                    className="h-14 px-8 rounded-full text-lg font-semibold"
-                >
-                    Summarize PDF
-                </Button>
-                <p className="text-muted-foreground">
-                    Your file stays private to your account.
-                </p>
-            </div> */}
         </>
     )
 }

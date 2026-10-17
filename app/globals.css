@@ -71,6 +71,7 @@
   --input: #6b7570;
   --ring: #087a59;
   --radius: 1.5rem;
+  --destructive: #B42318;
 }
 
 .dark {
@@ -91,6 +92,7 @@
   --border: #3a423f;
   --input: #5a6561;
   --ring: #3ddcae;
+  --destructive: #FF7A6E;
 }
 
 @layer base {

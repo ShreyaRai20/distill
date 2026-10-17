@@ -35,7 +35,6 @@ async function UploadContent() {
                 Reports, papers, contracts, meeting packs. Upload the file and read thekey points in under a minute.
             </p>
             <UploadForm />
-            <SampleCard />
         </>
     );
 }

@@ -1,6 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { dbConnect } from "../db";
 import { Summary } from "../summaries";
+import { parseSummary } from "../parse-summary";
 
 export async function getSummaries(): Promise<Summary[]> {
   const user = await currentUser()
@@ -16,37 +17,50 @@ export async function getSummaries(): Promise<Summary[]> {
     `;
 
   const summaries = rows.map((row) => (
-        {
-          id: row.id,
-          title: row.title,
-          excerpt: row.summary_text,
-          status: row.status,
-          createdAt: new Date(row.created_at)
-        }
-      )
+      {
+        id: row.id,
+        title: row.title,
+        excerpt: row.summary_text,
+        status: row.status,
+        createdAt: new Date(row.created_at)
+      }
     )
-    return summaries
+  )
+
+  const finalSummaries = summaries.map((summary)=> {
+      const parsed = parseSummary(summary.excerpt)
+      return {
+        ...summary,
+        tldr: parsed?.tldr ?? null
+      }
+      })
+
+  return  finalSummaries
 }
 
 export async function getSummaryById(summaryId:  string) {
-    const user = await currentUser()
-    if (!user) throw new Error("Not authorized")
+  const user = await currentUser()
+  if (!user) throw new Error("Not authorized")
 
-    console.log(`user: ${user.id}, summary: ${summaryId}`)
+  console.log(`user: ${user.id}, summary: ${summaryId}`)
     
-    const sql = await dbConnect()
-    const row = await sql`
-        SELECT * FROM pdf_summaries
-        WHERE id = ${summaryId} AND user_id = ${user.id}
-        `;
+  const sql = await dbConnect()
+  const rows = await sql`
+      SELECT * FROM pdf_summaries
+      WHERE id = ${summaryId} AND user_id = ${user.id}
+    `;
 
-    const summaries: Summary[] = row.map((row) => ({
-      id: row.id,
-      title: row.title,
-      excerpt: row.summary_text,
-      status: row.status,
-      createdAt: new Date(row.created_at),
-      }));
+  const row = rows[0];
+  if (!row) return null;
 
-      return summaries;
+  return {
+    id: row.id,
+    title: row.title ?? "Untitled summary",
+    excerpt: row.summary_text,
+    status: row.status,
+    createdAt: new Date(row.created_at),
+    summaryText: row.summary_text,
+    fileName: row.file_name,
+    fileUrl: row.original_file_url,
+  };
 }

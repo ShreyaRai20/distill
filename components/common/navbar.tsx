@@ -7,7 +7,7 @@ import Image from "next/image";
 
 export default function Navbar() {
     return (
-        <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur">
+        <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur border-transparent">
             <nav className="mx-auto max-w-7xl flex items-center justify-between px-6 py-3 lg:py-4">
                 {/* Left */}
                 <div className="flex items-center lg:flex-1">
@@ -27,8 +27,9 @@ export default function Navbar() {
                 </div>
 
                 {/* Center */}
-                <div className="flex items-center gap-4 lg:gap-12 lg:justify-center">
+                <div className="flex items-center gap-4 lg:gap-6 lg:justify-center">
                     <NavLink href="/pricing">Pricing</NavLink>
+                    <span />
                     <Show when="signed-in">
                         <NavLink href="/summaries">Your Summaries</NavLink>
                     </Show>

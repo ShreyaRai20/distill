@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { ArrowRight, FileText, X } from "lucide-react";
-import DeleteButton from "./delere-button";
+import DeleteSummaryButton from "./delete-summary-button";
 
 export default function SummaryCard({ summary }: { summary: Summary }) {
     return (
@@ -20,13 +20,13 @@ export default function SummaryCard({ summary }: { summary: Summary }) {
                     </div>
                     {/* delete button goes here in a later step */}
                     <div className="ml-auto shrink-0">
-                        <DeleteButton summaryId={summary.id} />
+                        <DeleteSummaryButton summaryId={summary.id} screenCode="summary" />
                     </div>
                 </div>
             </CardHeader>
             <CardContent>
                 <p className="line-clamp-3 text-muted-foreground">
-                    {summary.excerpt}
+                    {summary.tldr}
                 </p>
             </CardContent>
             <CardFooter className="mt-auto justify-between border-t-0 bg-transparent">
