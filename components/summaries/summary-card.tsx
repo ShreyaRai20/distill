@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowRight, FileText, X } from "lucide-react";
 import DeleteSummaryButton from "./delete-summary-button";
 
-export default function SummaryCard({ summary }: { summary: Summary }) {
+export default function SummaryCard({ summary }: { summary: (Summary & { tldr: string | null }) }) {
     return (
         <Card className="h-full rounded-[24px] px-2">
             <CardHeader>
@@ -20,7 +20,7 @@ export default function SummaryCard({ summary }: { summary: Summary }) {
                     </div>
                     {/* delete button goes here in a later step */}
                     <div className="ml-auto shrink-0">
-                        <DeleteSummaryButton summaryId={summary.id} screenCode="summary" />
+                        <DeleteSummaryButton summaryId={summary.id} screenCode="summaries" />
                     </div>
                 </div>
             </CardHeader>
