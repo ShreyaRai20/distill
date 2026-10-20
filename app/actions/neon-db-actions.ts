@@ -2,7 +2,7 @@
 "use server";
 import { dbConnect } from "@/lib/db";
 import { Summary } from "@/lib/summaries";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
 export async function getData() {
@@ -25,4 +25,23 @@ export async function deleteSummaryById(summaryId:  string) {
 
     revalidatePath("/summaries")
     return deletedSummary ;
+}
+
+export async function isUserActive() {
+    const clerkUser = await currentUser();
+
+    if (!clerkUser) {
+        throw new Error("Not authorized");
+    }
+
+    const sql = await dbConnect();
+
+    const rows = await sql`
+        SELECT status
+        FROM users
+        WHERE email = ${clerkUser.emailAddresses[0]?.emailAddress}
+        LIMIT 1
+    `;
+
+    return rows[0]?.status === "active";
 }

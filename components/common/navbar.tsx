@@ -4,7 +4,7 @@ import { Show, UserButton } from "@clerk/nextjs";
 import { ThemeToggle } from "./theme-toggle";
 import Image from "next/image";
 import Link from "next/link";
-import { Badge } from "../ui/badge";
+import { ProBadge } from "./pro-badge";
 
 export default function Navbar() {
     return (
@@ -41,12 +41,7 @@ export default function Navbar() {
                     <ThemeToggle />
                     <Show when="signed-in">
                         <NavLink href="/upload">Upload a PDF</NavLink>
-                        <Badge
-                            variant="ghost"
-                            className="gap-1.5 rounded-full px-3 py-1 text-primary hover:text-primary"
-                        >
-                            Pro
-                        </Badge>
+                        {/* <ProBadge /> */}
                         <UserButton />
                     </Show>
                     <Show when="signed-out">

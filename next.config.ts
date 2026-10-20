@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
     },
   },
   serverExternalPackages: ["@langchain/google", "@langchain/core"],
+   allowedDevOrigins: ["great-phones-love.loca.lt"],
 };
 
 export default nextConfig;

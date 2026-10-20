@@ -19,9 +19,9 @@ export default function SummaryCard({ summary }: { summary: (Summary & { tldr: s
                         <CardDescription>{formatDistanceToNow(summary.createdAt, { addSuffix: true })}</CardDescription>
                     </div>
                     {/* delete button goes here in a later step */}
-                    <div className="ml-auto shrink-0">
+                    {/* <div className="ml-auto shrink-0">
                         <DeleteSummaryButton summaryId={summary.id} screenCode="summaries" />
-                    </div>
+                    </div> */}
                 </div>
             </CardHeader>
             <CardContent>
