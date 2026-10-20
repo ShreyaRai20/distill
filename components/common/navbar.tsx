@@ -4,7 +4,6 @@ import { Show, UserButton } from "@clerk/nextjs";
 import { ThemeToggle } from "./theme-toggle";
 import Image from "next/image";
 import Link from "next/link";
-import { ProBadge } from "./pro-badge";
 
 export default function Navbar() {
     return (
