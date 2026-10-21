@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import PlanBadge from "./plan-badge";
 import { UserMenu } from "./user-menu";
+import { Suspense } from "react";
 
 export default function Navbar() {
     return (
@@ -41,7 +42,9 @@ export default function Navbar() {
                     <ThemeToggle />
                     <Show when="signed-in">
                         <NavLink href="/upload">Upload a PDF</NavLink>
-                        <PlanBadge />
+                        <Suspense fallback={<span className="h-8 w-20 animate-pulse rounded-full bg-muted" />}>
+                            <PlanBadge />
+                        </Suspense>
                         <UserMenu />
                     </Show>
                     <Show when="signed-out">
