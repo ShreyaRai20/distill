@@ -9,6 +9,7 @@ import { Suspense } from "react";
 import { ThemeProvider } from "@/components/common/theme-provider";
 import { Toaster } from "@/components/ui/toast";
 import { Inter } from "next/font/google";
+import ClerkThemeProvider from "@/components/common/clerk-theme-provider";
 
 const font = Inter({ subsets: ["latin"], variable: "--font-app" });
 
@@ -32,7 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           enableSystem
           disableTransitionOnChange
         >
-          <ClerkProvider>
+          <ClerkThemeProvider>
             <Suspense fallback={<>Loading...</>}>
               <Navbar />
             </Suspense>
@@ -41,9 +42,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </main>
             <Footer />
             <Toaster />
-          </ClerkProvider>
+          </ClerkThemeProvider>
         </ThemeProvider>
       </body>
-    </html>
+    </html >
   );
 }
