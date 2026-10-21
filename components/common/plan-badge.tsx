@@ -24,15 +24,15 @@ export default async function PlanBadge() {
     }
 
     return (
-        <div className="flex items-center gap-2">
-            <span className="hidden rounded-full bg-muted px-3 py-1 text-sm font-medium text-muted-foreground sm:inline-flex">
+        <div className="inline-flex items-center overflow-hidden rounded-full border border-muted-foreground/60 text-sm">
+            <span className="px-3 py-1 font-medium text-muted-foreground">
                 Basic
             </span>
+
             <Link
                 href="/pricing"
-                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+                className="border-l border-muted-foreground/40 px-3 py-1 font-semibold text-primary transition-colors hover:bg-primary/10"
             >
-                <Sparkles className="size-4" aria-hidden />
                 Upgrade
             </Link>
         </div>
