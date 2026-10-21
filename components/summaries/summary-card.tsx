@@ -4,7 +4,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import { ArrowRight, FileText, X } from "lucide-react";
-import DeleteSummaryButton from "./delete-summary-button";
 
 export default function SummaryCard({ summary }: { summary: (Summary & { tldr: string | null }) }) {
     return (

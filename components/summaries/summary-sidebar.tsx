@@ -34,8 +34,6 @@ export default function SummarySidebar({ summary }: { summary: SummaryDetail }) 
                         Open original PDF
                     </a>
                     <SummaryActions title={summary.title} text={summary.summaryText} />
-                    <DeleteSummaryButton summaryId={summary.id} screenCode="summary" />
-
                 </CardContent>
             </Card>
             <div className="rounded-[24px] border-2 border-dashed  border-primary p-6">
