@@ -1,9 +1,10 @@
-"use client"
 import NavLink from "./nav-link";
-import { Show, UserButton } from "@clerk/nextjs";
+import { Show } from "@clerk/nextjs";
 import { ThemeToggle } from "./theme-toggle";
 import Image from "next/image";
 import Link from "next/link";
+import PlanBadge from "./plan-badge";
+import { UserMenu } from "./user-menu";
 
 export default function Navbar() {
     return (
@@ -40,8 +41,8 @@ export default function Navbar() {
                     <ThemeToggle />
                     <Show when="signed-in">
                         <NavLink href="/upload">Upload a PDF</NavLink>
-                        {/* <ProBadge /> */}
-                        <UserButton />
+                        <PlanBadge />
+                        <UserMenu />
                     </Show>
                     <Show when="signed-out">
                         <NavLink href="/sign-in">Sign In</NavLink>

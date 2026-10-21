@@ -27,7 +27,7 @@ export const plans: Plan[] = [
       "Copy or download as Markdown",
       "Open the original PDF anytime",
     ],
-    priceId?: null
+    priceId: null
   },
   {
     id: "pro",
