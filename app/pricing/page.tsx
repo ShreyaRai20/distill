@@ -1,6 +1,5 @@
 import Faq from "@/components/pricing/faq";
 import PlanCard from "@/components/pricing/plan-card";
-import UpgradeButton from "@/components/pricing/upgrade-button";
 import { buttonVariants } from "@/components/ui/button";
 import { plans } from "@/lib/plans";
 import { cn } from "@/lib/utils";
