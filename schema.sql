@@ -62,3 +62,64 @@ CREATE TRIGGER update_payments_updated_at
   BEFORE UPDATE ON payments
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
+
+
+
+-- ============================================
+-- 1. FLASHCARDS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS flashcards (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+    summary_id UUID NOT NULL
+        REFERENCES pdf_summaries(id)
+        ON DELETE CASCADE,
+
+    user_id VARCHAR(255) NOT NULL,
+    topic TEXT NOT NULL,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    position INTEGER NOT NULL,
+
+    status VARCHAR(20) NOT NULL DEFAULT 'new'
+        CHECK (status IN ('new', 'learning', 'known')),
+
+    created_at TIMESTAMP WITH TIME ZONE
+        DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS flashcards_summary_idx
+    ON flashcards(summary_id);
+
+CREATE INDEX IF NOT EXISTS flashcards_user_idx
+    ON flashcards(user_id);
+
+
+-- ============================================
+-- 2. FLASHCARD DAILY USAGE TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS flashcard_usage (
+    user_id VARCHAR(255) NOT NULL,
+    day DATE NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')::date,
+    count INTEGER NOT NULL DEFAULT 0
+        CHECK (count >= 0),
+
+    PRIMARY KEY (user_id, day)
+);
+
+
+-- ============================================
+-- 3. SUMMARY DAILY USAGE TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS summary_usage (
+    user_id VARCHAR(255) NOT NULL,
+    day DATE NOT NULL DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')::date,
+    count INTEGER NOT NULL DEFAULT 0
+        CHECK (count >= 0),
+
+    PRIMARY KEY (user_id, day)
+);
+
+
+CREATE INDEX IF NOT EXISTS flashcards_summary_user_position_idx
+ON flashcards (summary_id, user_id, position);

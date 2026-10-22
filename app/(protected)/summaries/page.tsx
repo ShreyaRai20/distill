@@ -3,6 +3,7 @@ import FeaturedSummaryCard from "@/components/summaries/featured-summary-card";
 import SummaryCard from "@/components/summaries/summary-card";
 import UsageMeter from "@/components/summaries/usage-meter";
 import { getSummaries } from "@/lib/queries/summaries";
+import { PLAN_LIMIT } from "@/lib/summaries";
 import { auth } from "@clerk/nextjs/server"
 import { connection } from "next/server";
 import { Suspense } from "react";
@@ -23,7 +24,7 @@ async function SummariesContent() {
                         Your PDFs, boiled down to the key points.
                     </p>
                 </div>
-                {!isActive && <UsageMeter used={summaries.length} limit={5} />}
+                {!isActive && <UsageMeter used={summaries.length} limit={PLAN_LIMIT} />}
             </header>
             <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {latest && <FeaturedSummaryCard summary={latest} />}

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 export default function Pricing() {
+    const ENABLE_PAYMENTS = false;
     return (
         <div className="mx-auto max-w-6xl px-8 pb-24 pt-20">
             <header className="text-center">
@@ -22,31 +23,57 @@ export default function Pricing() {
 
             <div className="mx-auto mt-16 grid max-w-4xl gap-6 md:grid-cols-2">
                 {plans.map((plan) => (
-                    <PlanCard key={plan.id} plan={plan} action={
-                        plan.name === "Basic" ?
-                            (
+                    <PlanCard
+                        key={plan.id}
+                        plan={plan}
+                        action={
+                            plan.name === "Basic" ? (
                                 <Link
-                                    href="/upload" className={cn(
+                                    href="/upload"
+                                    className={cn(
                                         buttonVariants({ variant: "outline", size: "lg" }),
-                                        "rounded-full h-14 w-full text-lg font-semibold")}>
+                                        "h-14 w-full rounded-full text-lg font-semibold"
+                                    )}
+                                >
                                     Start free
                                 </Link>
                             ) : plan.paymentLink ? (
-                                <Link
-                                    href={plan.paymentLink}
+                                ENABLE_PAYMENTS ? (
+                                    <Link
+                                        href={plan.paymentLink}
+                                        className={cn(
+                                            buttonVariants({ size: "lg" }),
+                                            "h-14 w-full rounded-full text-lg font-semibold"
+                                        )}
+                                    >
+                                        Upgrade to Pro
+                                    </Link>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        disabled
+                                        className={cn(
+                                            buttonVariants({ size: "lg" }),
+                                            "h-14 w-full rounded-full text-lg font-semibold"
+                                        )}
+                                    >
+                                        Upgrade to Pro
+                                    </button>
+                                )
+                            ) : (
+                                <button
+                                    type="button"
+                                    disabled
                                     className={cn(
                                         buttonVariants({ size: "lg" }),
                                         "h-14 w-full rounded-full text-lg font-semibold"
                                     )}
                                 >
-                                    Upgrade to Pro
-                                </Link>
-                            ) : (
-                                <button disabled>
                                     Payment unavailable
                                 </button>
                             )
-                    } />
+                        }
+                    />
                 ))}
             </div>
             <Faq />

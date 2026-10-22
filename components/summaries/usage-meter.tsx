@@ -9,7 +9,7 @@ type usageMeterProps = {
 
 export default function UsageMeter({ used, limit }: usageMeterProps) {
     return (
-        <div className="min-w-64 rounded-2xl border bg-card px-5 py-4">
+        <div className="min-w-64 rounded-[24px] border bg-card px-5 py-4">
             <div className="flex gap-1.5">
                 {
                     Array.from({ length: limit }).map((_, i) => (

@@ -6,7 +6,7 @@ export type Summary = {
   createdAt: Date;
 };
 
-export const PLAN_LIMIT = 5;
+export const PLAN_LIMIT = 3;
 
 export type SummaryDetail = Summary & {
   summaryText: string;

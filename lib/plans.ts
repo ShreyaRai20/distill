@@ -1,6 +1,4 @@
 import { PLAN_LIMIT } from "@/lib/summaries";
-import { ReactNode } from "react";
-import { Url } from "url";
 
 export type Plan = {
   id: "basic" | "pro";
