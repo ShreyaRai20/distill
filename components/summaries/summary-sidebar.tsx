@@ -1,79 +1,112 @@
 "use client"
-import { SummaryDetail } from "@/lib/summaries";
-import { Card, CardContent } from "../ui/card";
-import { ArrowRight, Copy, FileText } from "lucide-react";
-import SummaryActions from "./summary-actions";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import FlashcardsDialog from "../flashcards/flashcards-dialog";
-import { useState } from "react";
-import { CARDS_PER_GENERATION, Flashcard, sampleCards } from "@/lib/flashcards";
-// change this import line
-import { Button, buttonVariants } from "../ui/button";
+
+import { useState } from "react"
+import Link from "next/link"
+import { ArrowRight, Copy, FileText, Loader2 } from "lucide-react"
+import { SummaryDetail } from "@/lib/summaries"
+import { CARDS_PER_GENERATION, Flashcard } from "@/lib/flashcards"
+import { generateFlashcards } from "@/app/actions/flashcard-actions"
+import { cn } from "@/lib/utils"
+import { Card, CardContent } from "../ui/card"
+import { Button, buttonVariants } from "../ui/button"
+import SummaryActions from "./summary-actions"
+import FlashcardsDialog from "../flashcards/flashcards-dialog"
 
 export default function SummarySidebar({ summary }: { summary: SummaryDetail }) {
     const [open, setOpen] = useState(false)
-    const [cards, setCards] = useState<Flashcard[]>(sampleCards)
+    const [cards, setCards] = useState<Flashcard[]>([])
     const [isGenerating, setIsGenerating] = useState(false)
+    const [error, setError] = useState<string | null>(null)
 
-    const handleGenerateMore = async () => {
+    async function generate(openAfter: boolean) {
         setIsGenerating(true)
-        await new Promise((resolve) => setTimeout(resolve, 1500))
-        setCards((prev) => [
-            ...prev,
-            ...Array.from({ length: CARDS_PER_GENERATION }, (_, i) => ({
-                id: `extra-${prev.length + i}`,
-                topic: "Sample",
-                front: `Sample question ${prev.length + i + 1}`,
-                back: `Sample answer ${prev.length + i + 1}`,
-            }))
-        ])
+        setError(null)
+
+        const result = await generateFlashcards(
+            summary.id,
+            cards.map((card) => card.front)
+        )
+
         setIsGenerating(false)
+
+        if (!result.success) {
+            setError(result.message)
+            return
+        }
+
+        setCards((prev) => [...prev, ...result.cards])
+        if (openAfter) setOpen(true)
     }
+
     return (
         <aside className="flex flex-col gap-4 lg:sticky lg:top-24 lg:self-start">
             <Card className="rounded-[24px] border border-primary">
                 <CardContent className="flex flex-col gap-5">
                     <div className="flex items-center gap-3">
-                        <div className="size-12 flex justify-center items-center shrink-0 rounded-[14px] border border-primary">
-                            <Copy className="size-5 text-primary transform scale-x-[-1]" />
+                        <div className="flex size-12 shrink-0 items-center justify-center rounded-[14px] border border-primary">
+                            <Copy className="size-5 scale-x-[-1] transform text-primary" />
                         </div>
                         <div className="min-w-0">
-                            <p className="text-lg wrap-break-words font-semibold">
+                            <p className="break-words text-lg font-semibold">
                                 Study this document
                             </p>
                         </div>
                     </div>
+
                     <p className="text-muted-foreground">
                         Turn this summary into {CARDS_PER_GENERATION} flashcards in one click.
                     </p>
-                    <Button
-                        className="h-12 w-full rounded-full text-base font-semibold"
-                        onClick={() => setOpen(true)}
-                    >
-                        Study flashcards
-                    </Button>
+
+                    {cards.length === 0 ? (
+                        <Button
+                            className="h-12 w-full rounded-full text-base font-semibold"
+                            disabled={isGenerating}
+                            onClick={() => generate(true)}
+                        >
+                            {isGenerating && <Loader2 className="size-4 animate-spin" />}
+                            {isGenerating
+                                ? "Creating flashcards…"
+                                : `Create ${CARDS_PER_GENERATION} flashcards`}
+                        </Button>
+                    ) : (
+                        <Button
+                            className="h-12 w-full rounded-full text-base font-semibold"
+                            onClick={() => {
+                                setError(null)
+                                setOpen(true)
+                            }}
+                        >
+                            Study flashcards
+                        </Button>
+                    )}
+
+                    {error && !open && (
+                        <p className="text-sm text-destructive">{error}</p>
+                    )}
+
                     <FlashcardsDialog
                         open={open}
                         onOpenChange={setOpen}
                         cards={cards}
                         usedToday={cards.length}
                         isGenerating={isGenerating}
-                        onGenerateMore={handleGenerateMore}
+                        error={error}
+                        onGenerateMore={() => generate(false)}
                     />
                 </CardContent>
             </Card>
+
             <Card className="rounded-[24px]">
                 <CardContent className="flex flex-col gap-5">
                     <div className="flex items-center gap-3">
-                        <div className="size-12 flex justify-center items-center shrink-0 rounded-[14px] border border-primary">
+                        <div className="flex size-12 shrink-0 items-center justify-center rounded-[14px] border border-primary">
                             <FileText className="size-5 text-primary" />
                         </div>
                         <div className="min-w-0">
                             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
                                 Original PDF
                             </p>
-                            <p className="wrap-break-word font-semibold">
+                            <p className="break-words font-semibold">
                                 {summary.fileName ?? "Uploaded document"}
                             </p>
                         </div>
@@ -82,6 +115,7 @@ export default function SummarySidebar({ summary }: { summary: SummaryDetail }) 
                         href={summary.fileUrl}
                         target="_blank"
                         rel="noreferrer"
+                        // optional: use variant: "outline" here so flashcards is the only filled button
                         className={cn(buttonVariants({ size: "lg" }), "h-12 w-full rounded-full")}
                     >
                         Open original PDF
@@ -89,10 +123,9 @@ export default function SummarySidebar({ summary }: { summary: SummaryDetail }) 
                     <SummaryActions title={summary.title} text={summary.summaryText} />
                 </CardContent>
             </Card>
-            <div className="rounded-[24px] border-2 border-dashed  border-primary p-6">
-                <p className="text-lg font-semibold">
-                    Another PDF?
-                </p>
+
+            <div className="rounded-[24px] border-2 border-dashed border-primary p-6">
+                <p className="text-lg font-semibold">Another PDF?</p>
                 <p className="mt-1 text-muted-foreground">
                     Turn your next document into a one-page summary.
                 </p>

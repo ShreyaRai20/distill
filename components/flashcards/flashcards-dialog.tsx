@@ -16,6 +16,7 @@ type Props = {
     usedToday: number
     isGenerating: boolean
     onGenerateMore: () => void
+    error?: string | null
 }
 
 export default function FlashcardsDialog({ open, onOpenChange, ...viewer }: Props) {

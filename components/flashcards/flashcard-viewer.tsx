@@ -10,6 +10,7 @@ type Props = {
     usedToday: number
     isGenerating: boolean
     onGenerateMore: () => void
+    error?: string | null
 }
 
 function shuffledIndices(length: number) {
@@ -73,6 +74,7 @@ export default function FlashcardViewer({
     usedToday,
     isGenerating,
     onGenerateMore,
+    error
 }: Props) {
     const [order, setOrder] = useState<number[]>([])
     const [position, setPosition] = useState(0)
@@ -205,6 +207,7 @@ export default function FlashcardViewer({
                     <p className="text-xs text-muted-foreground">
                         {remaining} of {DAILY_CARD_LIMIT} cards left today
                     </p>
+                    {error && <p className="text-xs text-destructive">{error}</p>}
                 </div>
             </div>
         </div>
